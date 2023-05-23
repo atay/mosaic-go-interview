@@ -1,5 +1,5 @@
 package services
 
-func Mulitply(x int, y int) (int, error) {
+func Multiply(x int, y int) (int, error) {
 	return x * y, nil
 }

@@ -5,7 +5,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY .  /app
-RUN 
+RUN cd src && go test ./...
 RUN CGO_ENABLED=0 GOOS=linux cd src && go build -a -installsuffix cgo -o app .
 
 
