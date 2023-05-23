@@ -53,5 +53,10 @@ func (c *RedisCacheService) Get(key string) (int, bool, error) {
 		return 0, false, fmt.Errorf("failed to convert cache value to int: %w", err)
 	}
 
+	_, err = c.client.Expire(ctx, key, c.ttl).Result()
+	if err != nil {
+		return 0, false, fmt.Errorf("failed to refresh cache TTL: %w", err)
+	}
+
 	return value, true, nil // Cache hit
 }
