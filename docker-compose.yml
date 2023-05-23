@@ -8,6 +8,9 @@ services:
       - 8080:8080
     depends_on:
       - redis
+    environment:
+      - HTTP_PORT=8080
+      - REDIS_URL=redis:6379
 
   redis:
     image: redis:latest

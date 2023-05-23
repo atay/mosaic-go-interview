@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"mosaic-go-interview/src/cache"
 	"mosaic-go-interview/src/handlers"
@@ -25,8 +26,11 @@ func handleBasicArythmetic(cacheService cache.CacheService) {
 }
 
 func main() {
-	cacheService := cache.NewRedisCacheService()
+	redisUrl := os.Getenv("REDIS_URL")
+	cacheService := cache.NewRedisCacheService(redisUrl)
 	handleBasicArythmetic(cacheService)
-	fmt.Println("Server listening on http://localhost:8080/")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	port := os.Getenv("HTTP_PORT")
+
+	fmt.Printf("Server listening on http://localhost:%s/\n", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }

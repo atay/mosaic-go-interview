@@ -14,9 +14,9 @@ type RedisCacheService struct {
 	ttl    time.Duration
 }
 
-func NewRedisCacheService() *RedisCacheService {
+func NewRedisCacheService(redisUrl string) *RedisCacheService {
 	client := redis.NewClient(&redis.Options{
-		Addr:     "redis:6379",
+		Addr:     redisUrl,
 		Password: "", // Set password if required
 		DB:       0,  // Use default database
 	})

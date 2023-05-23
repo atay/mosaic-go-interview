@@ -17,7 +17,7 @@ That's an interview task prepared for a recruitment in Mosiac Group for a senior
 1. The code is divided to handlers and services, so for each endpoint there's handler that checks the request, build the command that could be used by the service and sends it to proper service. This way we could provide a separation between infrastructure/app and domain layers of the app.
 2. I decided to use redis as cache system, becuse of TTL requirement, so I decided it will be easier. But I also created InMemoryCache in application, as I required it for handler tests, but this one is simpler and does not support TTL. The app uses `CacheService` interface, so it could be easily switched between those two.
 3. The app uses Dependency Injection, so `CacheService` is injected into handler.
-
+4. Port number and redis address are configurable via environment variables in `docker-compose.yml` file.
 
 # Docker notes
 
