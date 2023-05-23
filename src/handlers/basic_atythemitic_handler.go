@@ -6,8 +6,35 @@ import (
 	"net/url"
 	"strconv"
 
+	apperrors "mosaic-go-interview/src/errors"
 	"mosaic-go-interview/src/response"
 )
+
+func BasicArythmeticHandler(w http.ResponseWriter, r *http.Request, service func(int, int) (int, error)) {
+	x, y, err := getParams(r.URL.Query())
+	if err != nil {
+		sendErrorResponse(w, apperrors.InvalidOperandsError{}, http.StatusBadRequest)
+		return
+	}
+
+	action := r.URL.Path[1:]
+
+	result, err := service(x, y)
+	if err != nil {
+		sendErrorResponse(w, err, http.StatusBadRequest)
+		return
+	}
+
+	response := response.ArthmeticResponse{
+		Action: action,
+		X:      x,
+		Y:      y,
+		Answer: result,
+		Cached: false,
+	}
+
+	sendOkResponse(w, response)
+}
 
 func getParams(params url.Values) (int, int, error) {
 	x, err := strconv.Atoi(params.Get("x"))
@@ -23,7 +50,7 @@ func getParams(params url.Values) (int, int, error) {
 	return x, y, nil
 }
 
-func sendResponse(w http.ResponseWriter, response response.ArthmeticResponse) {
+func sendOkResponse(w http.ResponseWriter, response response.ArthmeticResponse) {
 	jsonResponse, err := json.Marshal(response)
 	if err != nil {
 		http.Error(w, "Failed to encode JSON response", http.StatusInternalServerError)
@@ -34,28 +61,16 @@ func sendResponse(w http.ResponseWriter, response response.ArthmeticResponse) {
 	w.Write(jsonResponse)
 }
 
-func BasicArythmeticHandler(w http.ResponseWriter, r *http.Request, service func(int, int) (int, error)) {
-	x, y, err := getParams(r.URL.Query())
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+func sendErrorResponse(w http.ResponseWriter, err error, httpsStatus int) {
+
+	userMessage := "Internal server error"
+	if userFriendlyErr, ok := err.(apperrors.UserFriendlyError); ok {
+		userMessage = userFriendlyErr.UserMessage()
 	}
 
-	action := r.URL.Path[1:]
-
-	result, err := service(x, y)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+	errResponse := response.ErrorResponse{
+		Error: userMessage,
 	}
-
-	response := response.ArthmeticResponse{
-		Action: action,
-		X:      x,
-		Y:      y,
-		Answer: result,
-		Cached: false,
-	}
-
-	sendResponse(w, response)
+	jsonResponse, _ := json.Marshal(errResponse)
+	http.Error(w, string(jsonResponse), httpsStatus)
 }
