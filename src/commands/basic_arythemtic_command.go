@@ -9,5 +9,5 @@ type BasicArythemticCommand struct {
 }
 
 func (c BasicArythemticCommand) GetCacheKey() string {
-	return fmt.Sprintf("Action: %s, X: %s, Y: %s", c.Action, fmt.Sprint(c.X), fmt.Sprint(c.Y))
+	return fmt.Sprintf("%s-%s-%s", c.Action, fmt.Sprint(c.X), fmt.Sprint(c.Y))
 }
