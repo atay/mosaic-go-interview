@@ -5,7 +5,9 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 
+	"mosaic-go-interview/src/cache"
 	"mosaic-go-interview/src/commands"
 	apperrors "mosaic-go-interview/src/errors"
 	"mosaic-go-interview/src/response"
@@ -19,11 +21,29 @@ var operationMap = map[string]func(commands.BasicArythemticCommand) (int, error)
 	"divide":   services.Divide,
 }
 
-func BasicArythmeticHandler(w http.ResponseWriter, r *http.Request) {
+func BasicArythmeticHandler(cacheService cache.CacheService, w http.ResponseWriter, r *http.Request) {
 
 	command, err := getCommand(r.URL.Query(), r.URL)
 	if err != nil {
 		sendErrorResponse(w, apperrors.InvalidOperandsError{}, http.StatusBadRequest)
+		return
+	}
+
+	value, hit, err := cacheService.Get(command.GetCacheKey())
+	if err != nil {
+		sendErrorResponse(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	if hit {
+		response := response.ArthmeticResponse{
+			Action: command.Action,
+			X:      command.X,
+			Y:      command.Y,
+			Answer: value,
+			Cached: true,
+		}
+		sendOkResponse(w, response)
 		return
 	}
 
@@ -38,6 +58,8 @@ func BasicArythmeticHandler(w http.ResponseWriter, r *http.Request) {
 		sendErrorResponse(w, err, http.StatusBadRequest)
 		return
 	}
+
+	cacheService.Set(command.GetCacheKey(), result, 60*time.Second)
 
 	response := response.ArthmeticResponse{
 		Action: command.Action,

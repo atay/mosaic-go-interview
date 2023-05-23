@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"mosaic-go-interview/src/cache"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -9,6 +10,9 @@ import (
 )
 
 func TestAddHandler(t *testing.T) {
+
+	cacheService := cache.NewMemoryCacheService()
+
 	testCases := []struct {
 		x              interface{}
 		y              interface{}
@@ -21,6 +25,7 @@ func TestAddHandler(t *testing.T) {
 		{2, 0, http.StatusOK, `{"action":"add","x":2,"y":0,"answer":2,"cached":false}`},    // Positive number and zero
 		{0, 0, http.StatusOK, `{"action":"add","x":0,"y":0,"answer":0,"cached":false}`},    // Both operands are zero
 		{2, -5, http.StatusOK, `{"action":"add","x":2,"y":-5,"answer":-3,"cached":false}`}, // Positive number and negative number
+		{2, -5, http.StatusOK, `{"action":"add","x":2,"y":-5,"answer":-3,"cached":true}`},  // check if cached
 		{2, "abc", http.StatusBadRequest, `{"error":"Invalid operands"}`},                  // Invalid string operand
 		{"abc", 5, http.StatusBadRequest, `{"error":"Invalid operands"}`},                  // Invalid string operand
 		{"abc", "def", http.StatusBadRequest, `{"error":"Invalid operands"}`},              // Invalid string operands
@@ -35,7 +40,7 @@ func TestAddHandler(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		AddHandler(res, req)
+		AddHandler(cacheService, res, req)
 
 		if res.Code != tc.expectedStatus {
 			t.Errorf("For x=%v, y=%v: Expected status code %d, but got %d", tc.x, tc.y, tc.expectedStatus, res.Code)

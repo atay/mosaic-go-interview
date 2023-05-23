@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"mosaic-go-interview/src/cache"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -9,6 +10,9 @@ import (
 )
 
 func TestSubtractHandler(t *testing.T) {
+
+	cacheService := cache.NewMemoryCacheService()
+
 	testCases := []struct {
 		x              interface{}
 		y              interface{}
@@ -19,6 +23,7 @@ func TestSubtractHandler(t *testing.T) {
 		{5, -3, http.StatusOK, `{"action":"subtract","x":5,"y":-3,"answer":8,"cached":false}`},  // Positive and negative numbers
 		{0, -2, http.StatusOK, `{"action":"subtract","x":0,"y":-2,"answer":2,"cached":false}`},  // Zero and negative number
 		{-5, 3, http.StatusOK, `{"action":"subtract","x":-5,"y":3,"answer":-8,"cached":false}`}, // Negative and positive numbers
+		{-5, 3, http.StatusOK, `{"action":"subtract","x":-5,"y":3,"answer":-8,"cached":true}`},  // check if cached
 		{0, 0, http.StatusOK, `{"action":"subtract","x":0,"y":0,"answer":0,"cached":false}`},    // Both operands are zero
 		{"abc", 5, http.StatusBadRequest, `{"error":"Invalid operands"}`},                       // Invalid string operand
 		{2, "abc", http.StatusBadRequest, `{"error":"Invalid operands"}`},                       // Invalid string operand
@@ -34,7 +39,7 @@ func TestSubtractHandler(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		SubtractHandler(res, req)
+		SubtractHandler(cacheService, res, req)
 
 		if res.Code != tc.expectedStatus {
 			t.Errorf("For x=%v, y=%v: Expected status code %d, but got %d", tc.x, tc.y, tc.expectedStatus, res.Code)
