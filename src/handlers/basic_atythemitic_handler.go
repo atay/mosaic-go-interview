@@ -6,11 +6,11 @@ import (
 	"net/url"
 	"strconv"
 
-	"mosaic-go-interview/src/cache"
-	"mosaic-go-interview/src/commands"
-	apperrors "mosaic-go-interview/src/errors"
-	"mosaic-go-interview/src/response"
-	"mosaic-go-interview/src/services"
+	"mosaic-go-interview/cache"
+	"mosaic-go-interview/commands"
+	apperrors "mosaic-go-interview/errors"
+	"mosaic-go-interview/response"
+	"mosaic-go-interview/services"
 )
 
 var operationMap = map[string]func(commands.BasicArythemticCommand) (int, error){

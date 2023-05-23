@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"fmt"
-	"mosaic-go-interview/src/cache"
+	"mosaic-go-interview/cache"
 	"net/http"
 	"net/http/httptest"
 	"strings"

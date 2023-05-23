@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"mosaic-go-interview/src/cache"
-	"mosaic-go-interview/src/handlers"
+	"mosaic-go-interview/cache"
+	"mosaic-go-interview/handlers"
 )
 
 func handleBasicArythmetic(cacheService cache.CacheService) {

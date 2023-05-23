@@ -1,7 +1,7 @@
 package services
 
 import (
-	"mosaic-go-interview/src/commands"
+	"mosaic-go-interview/commands"
 	"testing"
 )
 

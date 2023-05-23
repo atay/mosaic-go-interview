@@ -1,6 +1,6 @@
 package services
 
-import "mosaic-go-interview/src/commands"
+import "mosaic-go-interview/commands"
 
 type CannotDivideByZeroError struct{}
 
