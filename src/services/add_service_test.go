@@ -1,26 +1,28 @@
 package services
 
-import "testing"
+import (
+	"mosaic-go-interview/src/commands"
+	"testing"
+)
 
 func TestAdd(t *testing.T) {
 	testCases := []struct {
-		x        int
-		y        int
+		command  commands.BasicArythemticCommand
 		expected int
 	}{
-		{2, 5, 7},    // positive numbers
-		{-3, -4, -7}, // negative numbers
-		{-3, 0, -3},  // zero number
+		{commands.BasicArythemticCommand{Action: "add", X: 2, Y: 5}, 7},    // positive numbers
+		{commands.BasicArythemticCommand{Action: "add", X: -3, Y: -4}, -7}, // negative numbers
+		{commands.BasicArythemticCommand{Action: "add", X: -3, Y: 0}, -3},  // zero number
 	}
 
 	for _, tc := range testCases {
-		result, err := Add(tc.x, tc.y)
+		result, err := Add(tc.command)
 		if err != nil {
 			t.Errorf("Unexpected error: %v", err)
 		}
 
 		if result != tc.expected {
-			t.Errorf("For %d + %d, expected result %d, but got %d", tc.x, tc.y, tc.expected, result)
+			t.Errorf("For %d + %d, expected result %d, but got %d", tc.command.X, tc.command.Y, tc.expected, result)
 		}
 	}
 }

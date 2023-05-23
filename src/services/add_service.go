@@ -1,5 +1,7 @@
 package services
 
-func Add(x int, y int) (int, error) {
-	return x + y, nil
+import "mosaic-go-interview/src/commands"
+
+func Add(command commands.BasicArythemticCommand) (int, error) {
+	return command.X + command.Y, nil
 }

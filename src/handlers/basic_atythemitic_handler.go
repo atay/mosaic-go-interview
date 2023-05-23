@@ -6,29 +6,43 @@ import (
 	"net/url"
 	"strconv"
 
+	"mosaic-go-interview/src/commands"
 	apperrors "mosaic-go-interview/src/errors"
 	"mosaic-go-interview/src/response"
+	"mosaic-go-interview/src/services"
 )
 
-func BasicArythmeticHandler(w http.ResponseWriter, r *http.Request, service func(int, int) (int, error)) {
-	x, y, err := getParams(r.URL.Query())
+var operationMap = map[string]func(commands.BasicArythemticCommand) (int, error){
+	"add":      services.Add,
+	"subtract": services.Subtract,
+	"multiply": services.Multiply,
+	"divide":   services.Divide,
+}
+
+func BasicArythmeticHandler(w http.ResponseWriter, r *http.Request) {
+
+	command, err := getCommand(r.URL.Query(), r.URL)
 	if err != nil {
 		sendErrorResponse(w, apperrors.InvalidOperandsError{}, http.StatusBadRequest)
 		return
 	}
 
-	action := r.URL.Path[1:]
+	service, ok := operationMap[command.Action]
+	if !ok {
+		sendErrorResponse(w, apperrors.InvalidOperationError{}, http.StatusBadRequest)
+		return
+	}
 
-	result, err := service(x, y)
+	result, err := service(command)
 	if err != nil {
 		sendErrorResponse(w, err, http.StatusBadRequest)
 		return
 	}
 
 	response := response.ArthmeticResponse{
-		Action: action,
-		X:      x,
-		Y:      y,
+		Action: command.Action,
+		X:      command.X,
+		Y:      command.Y,
 		Answer: result,
 		Cached: false,
 	}
@@ -36,18 +50,23 @@ func BasicArythmeticHandler(w http.ResponseWriter, r *http.Request, service func
 	sendOkResponse(w, response)
 }
 
-func getParams(params url.Values) (int, int, error) {
+func getCommand(params url.Values, url *url.URL) (commands.BasicArythemticCommand, error) {
+	command := commands.BasicArythemticCommand{}
 	x, err := strconv.Atoi(params.Get("x"))
 	if err != nil {
-		return 0, 0, err
+		return command, err
 	}
 
 	y, err := strconv.Atoi(params.Get("y"))
 	if err != nil {
-		return 0, 0, err
+		return command, err
 	}
 
-	return x, y, nil
+	command.X = x
+	command.Y = y
+	command.Action = url.Path[1:]
+
+	return command, nil
 }
 
 func sendOkResponse(w http.ResponseWriter, response response.ArthmeticResponse) {

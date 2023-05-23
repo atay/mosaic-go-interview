@@ -1,5 +1,7 @@
 package services
 
-func Multiply(x int, y int) (int, error) {
-	return x * y, nil
+import "mosaic-go-interview/src/commands"
+
+func Multiply(command commands.BasicArythemticCommand) (int, error) {
+	return command.X * command.Y, nil
 }

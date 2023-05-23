@@ -1,5 +1,7 @@
 package services
 
-func Subtract(x int, y int) (int, error) {
-	return x - y, nil
+import "mosaic-go-interview/src/commands"
+
+func Subtract(command commands.BasicArythemticCommand) (int, error) {
+	return command.X - command.Y, nil
 }

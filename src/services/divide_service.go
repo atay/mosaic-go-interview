@@ -1,5 +1,7 @@
 package services
 
+import "mosaic-go-interview/src/commands"
+
 type CannotDivideByZeroError struct{}
 
 func (e CannotDivideByZeroError) Error() string {
@@ -10,9 +12,9 @@ func (e CannotDivideByZeroError) UserMessage() string {
 	return e.Error()
 }
 
-func Divide(x int, y int) (int, error) {
-	if y == 0 {
+func Divide(command commands.BasicArythemticCommand) (int, error) {
+	if command.Y == 0 {
 		return 0, CannotDivideByZeroError{}
 	}
-	return x / y, nil
+	return command.X / command.Y, nil
 }
