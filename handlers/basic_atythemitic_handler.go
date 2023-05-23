@@ -23,6 +23,17 @@ func getParams(params url.Values) (int, int, error) {
 	return x, y, nil
 }
 
+func sendResponse(w http.ResponseWriter, response response.ArthmeticResponse) {
+	jsonResponse, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "Failed to encode JSON response", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonResponse)
+}
+
 func BasicArythmeticHandler(w http.ResponseWriter, r *http.Request, service func(int, int) (int, error)) {
 	x, y, err := getParams(r.URL.Query())
 	if err != nil {
@@ -46,12 +57,5 @@ func BasicArythmeticHandler(w http.ResponseWriter, r *http.Request, service func
 		Cached: false,
 	}
 
-	jsonResponse, err := json.Marshal(response)
-	if err != nil {
-		http.Error(w, "Failed to encode JSON response", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonResponse)
+	sendResponse(w, response)
 }
