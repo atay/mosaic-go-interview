@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"time"
 
 	"mosaic-go-interview/src/cache"
 	"mosaic-go-interview/src/commands"
@@ -59,7 +58,7 @@ func BasicArythmeticHandler(cacheService cache.CacheService, w http.ResponseWrit
 		return
 	}
 
-	cacheService.Set(command.GetCacheKey(), result, 60*time.Second)
+	cacheService.Set(command.GetCacheKey(), result)
 
 	response := response.ArthmeticResponse{
 		Action: command.Action,

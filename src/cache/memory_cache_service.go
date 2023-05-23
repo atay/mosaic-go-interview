@@ -1,7 +1,5 @@
 package cache
 
-import "time"
-
 type MemoryCacheService struct {
 	cache map[string]int
 }
@@ -12,7 +10,7 @@ func NewMemoryCacheService() *MemoryCacheService {
 	}
 }
 
-func (m *MemoryCacheService) Set(key string, value int, expiration time.Duration) error {
+func (m *MemoryCacheService) Set(key string, value int) error {
 	m.cache[key] = value
 	return nil
 }

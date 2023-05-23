@@ -11,6 +11,7 @@ import (
 
 type RedisCacheService struct {
 	client *redis.Client
+	ttl    time.Duration
 }
 
 func NewRedisCacheService() *RedisCacheService {
@@ -22,13 +23,14 @@ func NewRedisCacheService() *RedisCacheService {
 
 	return &RedisCacheService{
 		client: client,
+		ttl:    60 * time.Second,
 	}
 }
 
-func (c *RedisCacheService) Set(key string, value int, expiration time.Duration) error {
+func (c *RedisCacheService) Set(key string, value int) error {
 	ctx := context.Background()
 
-	err := c.client.Set(ctx, key, value, expiration).Err()
+	err := c.client.Set(ctx, key, value, c.ttl).Err()
 	if err != nil {
 		return fmt.Errorf("failed to set cache value: %w", err)
 	}
