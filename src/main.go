@@ -7,17 +7,7 @@ import (
 
 	"mosaic-go-interview/src/cache"
 	"mosaic-go-interview/src/handlers"
-
-	"github.com/redis/go-redis/v9"
 )
-
-func NewRedisClient() *redis.Client {
-	return redis.NewClient(&redis.Options{
-		Addr:     "redis:6379",
-		Password: "",
-		DB:       0,
-	})
-}
 
 func handleBasicArythmetic(cacheService cache.CacheService) {
 	handlersMap := map[string]func(cache.CacheService, http.ResponseWriter, *http.Request){
