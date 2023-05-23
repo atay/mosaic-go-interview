@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"mosaic-go-interview/services"
+	"mosaic-go-interview/src/services"
 	"net/http"
 )
 

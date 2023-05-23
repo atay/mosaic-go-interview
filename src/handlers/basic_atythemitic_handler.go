@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"mosaic-go-interview/response"
+	"mosaic-go-interview/src/response"
 )
 
 func getParams(params url.Values) (int, int, error) {

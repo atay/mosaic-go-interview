@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"mosaic-go-interview/handlers"
+	"mosaic-go-interview/src/handlers"
 )
 
 func main() {
