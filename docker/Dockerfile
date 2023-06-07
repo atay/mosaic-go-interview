@@ -1,4 +1,4 @@
-FROM golang:1.20-alpine3.18 AS build
+FROM golang:1.20.5-bullseye AS build
 
 WORKDIR /app
 COPY src/go.mod src/go.sum ./
@@ -6,13 +6,14 @@ RUN go mod download
 
 COPY src/  ./
 RUN go test ./...
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+RUN CGO_ENABLED=0 go build -o app .
 
 
-FROM alpine:3.18.0
+FROM scratch
 
-RUN apk --no-cache add ca-certificates
+COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 WORKDIR /app
-COPY --from=build /app/app .
+COPY --from=build /app/app /app/app
 
-CMD ["./app"]
+CMD ["/app/app"]
