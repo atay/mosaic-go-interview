@@ -31,6 +31,6 @@ func main() {
 	handleBasicArythmetic(cacheService)
 	port := os.Getenv("HTTP_PORT")
 
-	fmt.Printf("Server listening on http://localhost:%s/\n", port)
+	log.Printf("Server listening on http://localhost:%s/\n", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }
