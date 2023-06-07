@@ -40,7 +40,7 @@ That's an interview task prepared for a recruitment in Mosiac Group for a senior
 
 1. There's a `docker-compose.yml` file, so the app can be easily run in docker with one command.
 2. The `Dockerfile` is multi-stage, so it builds the app in one container and then copies the binary to another container, so the final image is much smaller.
-3. The `Dockerfile` uses `scratch` as base image, so it's really small and contains only the binary and nothing else.
+3. The `Dockerfile` uses `alpine` as base image, so it's really small and contains only the binary and nothing else.
 4. The `Dockerfile` uses `CGO_ENABLED=0` to build the app, so it's static and does not require any libraries to run.
 5. The `Dockerfile` uses `go test -v ./...` to run tests, so it's easy to run tests in docker.
 6. Version of images in `Dockerfile` is not set to `latest`, this way you may be sure that all developers use the same version of images.

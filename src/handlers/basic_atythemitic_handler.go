@@ -58,7 +58,11 @@ func BasicArythmeticHandler(cacheService cache.CacheService, w http.ResponseWrit
 		return
 	}
 
-	cacheService.Set(command.GetCacheKey(), result)
+	err = cacheService.Set(command.GetCacheKey(), result)
+	if err != nil {
+		sendErrorResponse(w, err, http.StatusInternalServerError)
+		return
+	}
 
 	response := response.ArthmeticResponse{
 		Action: command.Action,
